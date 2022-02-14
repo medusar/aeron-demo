@@ -4,9 +4,11 @@ import io.aeron.Aeron;
 import io.aeron.Subscription;
 import io.aeron.driver.MediaDriver;
 import io.aeron.logbuffer.FragmentHandler;
+import io.aeron.logbuffer.Header;
 import io.aeron.samples.SampleConfiguration;
 import io.aeron.samples.SamplesUtil;
 import org.agrona.CloseHelper;
+import org.agrona.DirectBuffer;
 import org.agrona.concurrent.SigInt;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,7 +38,12 @@ public class BasicSubscriber {
             ctx.aeronDirectoryName(driver.aeronDirectoryName());
         }
 
-        final FragmentHandler fragmentHandler = SamplesUtil.printAsciiMessage(STREAM_ID);
+        final FragmentHandler fragmentHandler = new FragmentHandler() {
+            @Override
+            public void onFragment(DirectBuffer buffer, int offset, int length, Header header) {
+
+            }
+        };
         final AtomicBoolean running = new AtomicBoolean(true);
 
         // Register a SIGINT handler for graceful shutdown.
